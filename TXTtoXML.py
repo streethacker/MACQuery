@@ -39,8 +39,7 @@ class TXTtoXMLHandler:
 
 		_node = """\t<addr id="%s">
 			<org>%s</org>
-			<detail>%s</detail>
-		</addr>"""
+			<detail>%s</detail>\n\t</addr>"""
 
 		print >> self._fileXML, "<?xml version=\"1.0\"?>"
 		print >> self._fileXML, "<mac>"
