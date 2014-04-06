@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
+__all__ = ["MACQueryError", "BadFormatError", "BadRequestError", "MACQueryHandler"]
+
 import xml.etree.ElementTree as ET
 import re
 
@@ -86,7 +88,7 @@ class MACQueryHandler:
 
 if __name__ == "__main__":
 		handler = MACQueryHandler("./data.xml")
-		result = handler.query("DC-2B-66-00")
+		result = handler.query("00-00-0A")
 		print result["id"]
 		print result["org"]
 		print result["detail"]
