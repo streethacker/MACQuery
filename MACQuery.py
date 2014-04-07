@@ -32,8 +32,7 @@ class BadFormatError(MACQueryError):
 		"5$-22-33" : unsupported characters
 		"9C.3A.AF" : unsupported delimeters
 	"""
-	def __init__(self):
-		self.info = "ERROR: Bad Format MAC addrs."
+	_info = "ERROR: Bad Format MAC addrs."
 
 	@property
 	def usage(self):
@@ -49,8 +48,7 @@ class BadRequestError(MACQueryError):
 		that is legal but set up recently.
 		--Our database is out of date.You can contact the author by email:silverbullet7714@gmail.com
 	"""
-	def __init__(self):
-		self.info = "ERROR: No Suitable MAC addrs Found."
+	_info = "ERROR: No Suitable MAC addrs Found."
 
 	@property
 	def usage(self):
@@ -82,13 +80,13 @@ class MACQueryHandler:
 				if result:
 						return result
 				else:
-						raise BadRequestError
+						raise BadRequestError, BadRequestError._info
 		else:
-				raise BadFormatError
+				raise BadFormatError, BadFormatError._info
 
 if __name__ == "__main__":
 		handler = MACQueryHandler("./data.xml")
-		result = handler.query("00-00-0A")
+		result = handler.query("e8-bb-a8")
 		print result["id"]
 		print result["org"]
 		print result["detail"]
