@@ -45,19 +45,7 @@ class GetMACInfo:
 										print _usage
 								elif tag in ("-a", "--addr"):
 										_maclist = map(str.strip, value.split(","))
-										for addr in _maclist:
-												try:
-														_result = self.handler.query(addr)
-												except BadFormatError as err:
-														print str(err)
-												except BadRequestError as err:
-														print str(err)
-														_tmp_warning = self._warning % addr
-														self.result.append(_tmp_warning)
-												else:
-														_tmp_resultInfo = self._resultInfo % (_result["id"], \
-																		_result["org"], _result["detail"])
-														self.result.append(_tmp_resultInfo)
+										self._getBy(*_maclist)
 		else:
 				self._getDefaultLinux2()
 
@@ -68,18 +56,7 @@ class GetMACInfo:
 		_maclist = map(str.strip, _in_addrs)
 
 		if _maclist[0]:
-				for addr in _maclist:
-						try:
-								_result = self.handler.query(addr)
-						except BadFormatError as err:
-								print str(err)
-						except BadRequestError as err:
-								print str(err)
-								_tmp_warning = self._warning % addr
-								self.result.append(_tmp_warning)
-						else:
-								_tmp_resultInfo = self._resultInfo % (_result["id"], _result["org"], _result["detail"])
-								self.result.append(_tmp_resultInfo)
+				self._getBy(*_maclist)
 		else:
 				self._getDefaultWin32()
 
@@ -103,35 +80,13 @@ class GetMACInfo:
 		_tmp = map(str.strip, _pipe_data.split("\n")[:-1])
 		_maclist = [item.split()[-1] for item in _tmp]
 
-		for addr in _maclist:
-				try:
-						_result = self.handler.query(addr)
-				except BadFormatError as err:
-						print str(err)
-				except BadRequestError as err:
-						print str(err)
-						_tmp_warning = self._warning % addr
-						self.result.append(_tmp_warning)
-				else:
-						_tmp_resultInfo = self._resultInfo % (_result["id"], _result["org"], _result["detail"])
-						self.result.append(_tmp_resultInfo)
+		self._getBy(*_maclist)
 
 	def _getDefaultWin32(self):
 		_pipe_data = os.popen("wmic nicconfig get MACAddress").read()
 		_maclist = _pipe_data.split()[1:]
 
-		for addr in _maclist:
-				try:
-						_result = self.handler.query(addr)
-				except BadFormatError as err:
-						print str(err)
-				except BadRequestError as err:
-						print str(err)
-						_tmp_warning = self._warning % addr
-						self.result.append(_tmp_warning)
-				else:
-						_tmp_resultInfo = self._resultInfo % (_result["id"], _result["org"], _result["detail"])
-						self.result.append(_tmp_resultInfo)
+		self._getBy(*_maclist)
 
 	def printHWaddrs(self):
 		for info in self.result:
