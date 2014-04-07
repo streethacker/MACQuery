@@ -11,14 +11,21 @@ class GetMACInfo:
 	Manufacturer : %s
 	M's addr : %s
 	"""
-	_warning = """
+	_warning_not_found = """
 	HWaddr : %s
+	Stop : %s
 	Note : Unknown MAC addrs.
 	Reasons:
 		Network Adapter was produced by Illegal Manufacturer;
 		MAC addr has been modified artificially;
 		MAC addr of a Virtual Network Adapter.
 	"""
+
+	_warning_bad_format = """
+	HWaddr : %s
+	Stop : %s
+	"""
+
 	def __init__(self, path="data.xml"):
 		self.handler = MACQueryHandler(path)
 		self.result = []
@@ -66,11 +73,11 @@ class GetMACInfo:
 				try:
 						_result = self.handler.query(addr)
 				except BadFormatError as err:
-						print str(err)
+						_tmp_warning_bad_format = self._warning_bad_format % (addr, str(err))
+						self.result.append(_tmp_warning_bad_format)
 				except BadRequestError as err:
-						print str(err)
-						_tmp_warning = self._warning % addr
-						self.result.append(_tmp_warning)
+						_tmp_warning_not_found = self._warning_not_found % (addr, str(err))
+						self.result.append(_tmp_warning_not_found)
 				else:
 						_tmp_resultInfo = self._resultInfo % (_result["id"], _result["org"], _result["detail"])
 						self.result.append(_tmp_resultInfo)
