@@ -67,7 +67,7 @@ class GetMACInfo:
 							(default to local machine's MAC addrs):").split(",")
 		_maclist = map(str.strip, _in_addrs)
 
-		if _maclist:
+		if _maclist[0]:
 				for addr in _maclist:
 						try:
 								_result = self.handler.query(addr)
