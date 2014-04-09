@@ -6,13 +6,36 @@ import os, sys
 import re
 
 REGEX_PATH = re.compile(r"^[A-Z]{1}:(\\[A-Za-z\s]+){0,5}\\?$")
-REGEX_HKEY = re.compile(r"")
+REGEX_FONT = re.compile(r"^Source Code Pro.*\.ttf$")
+
+class BadPathFormat(Exception):
+	_info = """
+	INSTALLATION FAILED:
+	Bad format of installation path, the following format is recommended:
+		Drive:\sub_directory1\sub_directory2
+	"""
+class FontRelyError(Exception):
+	_info="""
+	INSTALLATION FAILED:
+	Font <<Source Code Pro>> is needed,please install the font first.
+	"""
 
 class PackageInstall:
-	def __init__(self, path="C:"):
-		self.path = path.replace("\\", "_")
+	def __init__(self, path="C:\\"):
+		if REGEX_PATH.search(path):
+				self.abspath = path.rstrip("\\")
+				self.hkeypath = path.rstrip("\\").replace("\\", "_")
+		else:
+				raise BadPathFormat, BadPathFormat._info
 
 	def _fontRegister(self):
+		_fontList = os.listdir("C:\\Windows\\Fonts")
+		for font in _fontList:
+				if REGEX_FONT.search(font):
+						break
+				else:
+						raise FontRelyError, FontRelyError._info
+
 		_sub_key = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Console\\TrueTypeFont"
 		try:
 				_preKeyHandle = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, _sub_key, 0, _winreg.KEY_ALL_ACCESS)
@@ -24,7 +47,18 @@ class PackageInstall:
 				_winreg.CloseKey(_preKeyHandle)
 
 	def _copyFiles(self):
-		pass
+		_dir = self.abspath + "\\" + "MACQuery"
+
+		try:
+				os.mkdir(_dir)
+		except (IOError, OSError) as err:
+				print str(err)
+				sys.exit(2)
+		try:
+				os.system("xcopy .\\* %s /EXCLUDE:winSetup.exe" % _dir)
+		except (IOError, OSError) as err:
+				print str(err)
+				sys.exit(2)
 
 	def _mainRegister(self):
 		_pairs = [("CodePage", _winreg.REG_DWORD, 850),\
@@ -37,7 +71,7 @@ class PackageInstall:
 				]
 
 		_suffix = "_MACQuery_main.exe"
-		_hkey = self.path[-1] == "_" and self.path[:-1]+_suffix or self.path + _suffix
+		_hkey = self.hkeypath + _suffix
 
 		try:
 				_preKeyHandle = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, "Console", 0, _winreg.KEY_ALL_ACCESS)
@@ -54,8 +88,11 @@ class PackageInstall:
 
 
 	def packed(self):
-		pass
+		self._fontRegister()
+		self._copyFiles()
+		self._mainRegister()
 
 
 if __name__ == "__main__":
-		pass
+		handler = PackageInstall("H:\\")
+		handler.packed()
