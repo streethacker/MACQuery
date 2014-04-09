@@ -30,11 +30,14 @@ class PackageInstall:
 
 	def _fontRegister(self):
 		_fontList = os.listdir("C:\\Windows\\Fonts")
+
+		_flag = False
 		for font in _fontList:
 				if REGEX_FONT.search(font):
+						_flag = True
 						break
-				else:
-						raise FontRelyError, FontRelyError._info
+		if not _flag:
+				raise FontRelyError, FontRelyError._info
 
 		_sub_key = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Console\\TrueTypeFont"
 		try:
