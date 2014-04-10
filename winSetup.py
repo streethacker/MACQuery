@@ -6,7 +6,7 @@ import os, sys
 import re
 
 REGEX_PATH = re.compile(r"^[A-Z]{1}:(\\[A-Za-z\s]+){0,5}\\?$")
-REGEX_FONT = re.compile(r"^Source Code Pro.*\.ttf$")
+REGEX_FONT = re.compile(r"^SourceCodePro.*\.ttf$")
 
 class BadPathFormat(Exception):
 	_info = """
@@ -58,7 +58,7 @@ class PackageInstall:
 				print str(err)
 				sys.exit(2)
 		try:
-				os.system("xcopy .\\* %s /Y /EXCLUDE:exList.txt" % _dir)
+				os.system("xcopy * %s /Y /EXCLUDE:exList.txt" % _dir)
 		except (IOError, OSError) as err:
 				print str(err)
 				sys.exit(2)
@@ -97,5 +97,11 @@ class PackageInstall:
 
 
 if __name__ == "__main__":
-		handler = PackageInstall("H:\\")
-		handler.packed()
+		_install_dir = raw_input("INSTALL DIRECTORY:")
+		try:
+				handler = PackageInstall(_install_dir)
+				handler.packed()
+		except BadPathFormat as err:
+				print str(err)
+		except FontRelyError as err:
+				print str(err)
