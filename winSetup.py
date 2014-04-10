@@ -58,7 +58,7 @@ class PackageInstall:
 				print str(err)
 				sys.exit(2)
 		try:
-				os.system("xcopy .\\* %s /EXCLUDE:winSetup.exe" % _dir)
+				os.system("xcopy .\\* %s /Y /EXCLUDE:exList.txt" % _dir)
 		except (IOError, OSError) as err:
 				print str(err)
 				sys.exit(2)
