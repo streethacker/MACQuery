@@ -58,8 +58,8 @@ class GetMACInfo:
 
 
 	def get_macinfo_win32(self):
-		_in_addrs = raw_input("Input a MAC addr or a list of MAC addrs seperated by commas\n\
-		(default to local machine's MAC addrs):").split(",")
+		_in_addrs = raw_input("Input a MAC addr or a list of MAC addrs seperated by commas\
+(default to local machine's MAC addrs):\n").split(",")
 		_maclist = map(str.strip, _in_addrs)
 
 		if _maclist[0]:
@@ -100,6 +100,7 @@ class GetMACInfo:
 				print "+--------------------------------------------------------------------------------------------------------+"
 				print info
 				print "+--------------------------------------------------------------------------------------------------------+"
+		raw_input("Press Enter to quit...")
 
 
 if __name__ == "__main__":
